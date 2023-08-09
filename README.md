@@ -3,7 +3,10 @@
 ### GNU Rights distributed by: Schoeman and Brink, LLC
 ### Developed by: Tinus Brink AKA: "Tiny"
 
+The below tool is created for HANA2 SPS05.  We will soon start working on SPS07.  This file explains how to download the files and build a single executable that can be run from the sidadm user.
+
 Currently build and tested for SUSE Linux Enterprise Server 15 SP4 (SLES15.4)
+
 ##Install git on your HANA SLES DEV or SANDBOX host:
 
 ####Git Option A: Install git
@@ -21,6 +24,7 @@ git --version
 ```
 
 ####Git Option B: Install git (No repository)
+
 ####Please note this option uses a OpenSUSE repository which is free.  Only install on DEV/TEST or SANDBOX systems for testing purposes.  It is always best to have the paid for repositories for SLES on a SLES system.  Contact SUSE supoprt for the correct repository for your SLES version.
 
 ```sh

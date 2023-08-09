@@ -31,7 +31,7 @@ I created this file in the /tinyhanatools/ directory everytime I update the prog
 
 Contents: (Please also chmod +x 1_create_hanatools.sh before you run it, recommended as superuser)
 
-rm -r `__pycache__/` build/ dist A0_tinyhanatools.spec
+`rm -r __pycache__/ build/ dist A0_tinyhanatools.spec
 sleep 1
 pyinstaller --onefile --hidden-import=hdbcli A0_tinyhanatools.py
 sleep 1
@@ -43,7 +43,7 @@ sleep 1
 chown sidadm:sapsys /tinyhanatools/dist/A0_tinyhanatools
 sleep 1
 #PLEASE CHANGE SID AND INSTANCE NUMBER BELOW!!!
-cp -p /tinyhanatools/dist/A0_tinyhanatools /usr/sap/SID/HDB??/exe/tinyhanatools
+cp -p /tinyhanatools/dist/A0_tinyhanatools /usr/sap/SID/HDB??/exe/tinyhanatools`
 
 
 #PLEASE CHANGE SID AND INSTANCE NUMBER BELOW!!!

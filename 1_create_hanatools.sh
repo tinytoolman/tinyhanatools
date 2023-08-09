@@ -11,4 +11,3 @@ chown hadadm:sapsys /tinyhanatools/dist/A0_tinyhanatools
 sleep 1
 #PLEASE CHANGE SID <sid> AND INSTANCE NUMBER ?? BELOW!!!
 cp -p /tinyhanatools/dist/A0_tinyhanatools /usr/sap/<sid>/HDB??/exe/tinyhanatools
-

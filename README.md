@@ -1,7 +1,7 @@
 ﻿# tinyhanatools v 1.06
 ### www.sabtec.co
-### Schoeman and Brink, LLC
-### Tinus Brink AKA: "Tiny"
+### GNU Rights distributed by: Schoeman and Brink, LLC
+### Developed by: Tinus Brink AKA: "Tiny"
 
 Currently build and tested for SUSE Linux Enterprise Server 15 SP4 (SLES15.4)
 Install git on your HANA SLES DEV or SANDBOX host:
@@ -32,26 +32,19 @@ I created this file in the /tinyhanatools/ directory everytime I update the prog
 Contents: (Please also chmod +x 1_create_hanatools.sh before you run it, recommended as superuser)
 
 rm -r `__pycache__/` build/ dist A0_tinyhanatools.spec
-
 sleep 1
-
 pyinstaller --onefile --hidden-import=hdbcli A0_tinyhanatools.py
-
 sleep 1
-
 #PLEASE CHANGE SID BELOW!!!
-
 chown sidadm:sapsys /tinyhanatools/dist/A0_tinyhanatools
-
 sleep 1
-
 chmod +x /tinyhanatools/dist/A0_tinyhanatools
-
 sleep 1
-
 chown sidadm:sapsys /tinyhanatools/dist/A0_tinyhanatools
-
 sleep 1
+#PLEASE CHANGE SID AND INSTANCE NUMBER BELOW!!!
+cp -p /tinyhanatools/dist/A0_tinyhanatools /usr/sap/SID/HDB??/exe/tinyhanatools
+
 
 #PLEASE CHANGE SID AND INSTANCE NUMBER BELOW!!!
 

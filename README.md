@@ -13,9 +13,9 @@ If you have no interest to work on the python code and you only want to use the 
 wget https://raw.githubusercontent.com/tinytoolman/tinyhanatools/main/tinyhanatools
 ```
 
-##Install git on your HANA SLES DEV or SANDBOX host:
+## Install git on your HANA SLES DEV or SANDBOX host:
 
-####Git Option A: Install git
+### Git Option A: Install git
 
 ```sh
 sudo zypper install git
@@ -29,9 +29,9 @@ sudo zypper install git
 git --version
 ```
 
-####Git Option B: Install git (No repository)
+### Git Option B: Install git (No repository)
 
-####Please note this option uses a OpenSUSE repository which is free.  Only install on DEV/TEST or SANDBOX systems for testing purposes.  It is always best to have the paid for repositories for SLES on a SLES system.  Contact SUSE supoprt for the correct repository for your SLES version.
+#### Please note this option uses a OpenSUSE repository which is free.  Only install on DEV/TEST or SANDBOX systems for testing purposes.  It is always best to have the paid for repositories for SLES on a SLES system.  Contact SUSE supoprt for the correct repository for your SLES version.
 
 ```sh
 sudo zypper addrepo http://download.opensuse.org/distribution/leap/15.4/repo/oss/ SLES-SDK
@@ -52,7 +52,7 @@ sudo zypper install git
 git --version
 ```
 
-##Use PyInstaller for Single Executable
+## Use PyInstaller for Single Executable
 
 To use pyinstaller to make a single executable file for the program, recommended.  Then you should first test if you can use pyinstaller on your system.
 
@@ -60,9 +60,9 @@ To use pyinstaller to make a single executable file for the program, recommended
 sudo pyinstaller
 ```
 
-#####Note:  If you get "pyinstaller: command not found", then goto option: Install pyinstaller Option A:
+##### Note:  If you get "pyinstaller: command not found", then goto option: Install pyinstaller Option A:
 
-###Install pyinstaller Option A:
+### Install pyinstaller Option A:
 
 ```sh
 sudo zypper install pyinstaller
@@ -70,8 +70,8 @@ sudo zypper install pyinstaller
 
 If you get "'pyinstaller' not found in package names." Then you should add a repository for python with: Install pyinstaller Option B: (No repository)
 
-###Install pyinstaller Option B: (No repository)
-####Please note this option uses a OpenSUSE repository which is free.  Only install on DEV/TEST or SANDBOX systems for testing purposes.  It is always best to have the paid for repositories for SLES on a SLES system.  Contact SUSE supoprt for the correct repository for your SLES version.
+### Install pyinstaller Option B: (No repository)
+#### Please note this option uses a OpenSUSE repository which is free.  Only install on DEV/TEST or SANDBOX systems for testing purposes.  It is always best to have the paid for repositories for SLES on a SLES system.  Contact SUSE supoprt for the correct repository for your SLES version.
 
 ```sh
 sudo zypper addrepo https://download.opensuse.org/repositories/devel:languages:python/15.5/devel:languages:python.repo
@@ -99,7 +99,7 @@ Check the version of pyinstaller.
 pyinstaller --version
 ```
 
-##Download files from Github Repository
+## Download files from Github Repository
 
 To download the files from the github repository, you can use the following command.  I did it to the root diretory. If you do it other directories then it is fine, just be sure to also make adjustments to later scripts like creating the executable file with pyinstaller, as they currently point to the tinyhanatools directory created from root /.
 

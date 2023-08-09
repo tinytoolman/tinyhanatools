@@ -122,9 +122,9 @@ You can now use pyinstaller to make one file for running program as <sid>adm.  P
 ```sh
 sudo pyinstaller --onefile --hidden-import=hdbcli A0_tinyhanatools.py
 ```
+##### Note: If during this process you get "you do not have execution permission for `/usr/lib64/" then you can run chmod +x /path/to/library.so for the file that requires it.
 
-This would create file called:  A0_tinyhanatools.  Feel free to rename to tinyhanatools if you like and copy to /usr/sap/<sid>/HDB##/exe directory.
-If you do this step, please change <sid> to your system ID for your HANA host and change ## to the instance number.
+This would create file called:  A0_tinyhanatools.  Feel free to rename to tinyhanatools if you like and copy to /usr/sap/<sid>/HDB##/exe directory. If you do this step, please change <sid> to your system ID for your HANA host and change ## to the instance number.  
 
 ```sh
 cp -p /tinyhanatools/dist/A0_tinyhanatools /usr/sap/SID/HDB??/exe/tinyhanatools

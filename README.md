@@ -49,7 +49,7 @@ chmod +x /software/tinyhanatools/dist/A0_tinyhanatools
 
 sleep 1
 
-chown hadadm:sapsys /tinyhanatools/dist/A0_tinyhanatools
+chown sidadm:sapsys /tinyhanatools/dist/A0_tinyhanatools
 
 sleep 1
 

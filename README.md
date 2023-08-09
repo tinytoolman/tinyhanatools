@@ -15,7 +15,7 @@ You can use pyinstaller to make one file for running program as <sid>adm.  Pleas
 This would create file called:  A0_tinyhanatools.  Feel free to rename to tinyhanatools if you like and copy to /usr/sap/<sid>/HDB##/exe directory.
 If you do this step, please change <sid> to your system ID for your HANA host and change ## to the instance number.
 
-**cp -p /tinyhanatools/dist/A0_tinyhanatools /usr/sap/<sid>/HDB##/exe/tinyhanatools**
+**cp -p /tinyhanatools/dist/A0_tinyhanatools /usr/sap/SID/HDB??/exe/tinyhanatools**
 
 Change the ownership of the file:
 
@@ -41,7 +41,7 @@ sleep 1
 
 #PLEASE CHANGE SID BELOW!!!
 
-chown hadadm:sapsys /tinyhanatools/dist/A0_tinyhanatools
+chown sidadm:sapsys /tinyhanatools/dist/A0_tinyhanatools
 
 sleep 1
 
@@ -55,4 +55,4 @@ sleep 1
 
 #PLEASE CHANGE SID AND INSTANCE NUMBER BELOW!!!
 
-cp -p /software/tinyhanatools/dist/A0_tinyhanatools /usr/sap/<sid>/HDB##/exe/tinyhanatools
+cp -p /software/tinyhanatools/dist/A0_tinyhanatools /usr/sap/SID/HDB??/exe/tinyhanatools

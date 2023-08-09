@@ -31,7 +31,7 @@ I created this file in the /tinyhanatools/ directory everytime I update the prog
 
 Contents: (Please also chmod +x 1_create_hanatools.sh before you run it, recommended as superuser)
 
-rm -r __pycache__/ build/ dist A0_tinyhanatools.spec
+rm -r '__pycache__/' build/ dist A0_tinyhanatools.spec
 
 sleep 1
 

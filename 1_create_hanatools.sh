@@ -1,3 +1,4 @@
+'''sh
 rm -r __pycache__/ build/ dist A0_tinyhanatools.spec
 sleep 1
 pyinstaller --onefile --hidden-import=hdbcli A0_tinyhanatools.py

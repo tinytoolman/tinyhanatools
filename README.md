@@ -3,9 +3,15 @@
 ### GNU Rights distributed by: Schoeman and Brink, LLC
 ### Developed by: Tinus Brink AKA: "Tiny"
 
-The below tool is created for HANA2 SPS05.  We will soon start working on SPS07.  This file explains how to download the files and build a single executable that can be run from the sidadm user.
+The below tool is created for HANA2 SPS05.  We will soon start working on SPS07.  This file explains how to download the files and build a single executable that can be run from the sidadm user.  
 
-Currently build and tested for SUSE Linux Enterprise Server 15 SP4 (SLES15.4)
+Currently build and tested for SUSE Linux Enterprise Server 15 SP4 (SLES15.4).  
+
+If you have no interest to work on the python code and you only want to use the tool, then you can download the tinyhanatools file from the above repository, chmod +x the file for sidadm user and copy it to your /usr/sap/SID/HDB??/exe directory to run it from anywhere witht he sidadm user.  You can also download only the one executable file with the following command below and running it from the directory you would like to execute it from.  You might have to rename the file afterwards.  If the file has the correct permissions and it is located in the exe directory of the hana system, it should run by just typing tinyhanatools.  A rename might be required as wget might add .1 at the end of the file.
+
+```sh
+wget https://raw.githubusercontent.com/tinytoolman/tinyhanatools/main/tinyhanatools
+```
 
 ##Install git on your HANA SLES DEV or SANDBOX host:
 
@@ -46,7 +52,9 @@ sudo zypper install git
 git --version
 ```
 
-If you want to use pyinstaller to make a single executable file for the program, recommended.  Then you should first test if you can use pyinstaller on your system.
+##Use PyInstaller for Single Executable
+
+To use pyinstaller to make a single executable file for the program, recommended.  Then you should first test if you can use pyinstaller on your system.
 
 ```sh
 sudo pyinstaller
@@ -54,7 +62,7 @@ sudo pyinstaller
 
 #####Note:  If you get "pyinstaller: command not found", then goto option: Install pyinstaller Option A:
 
-####Install pyinstaller Option A:
+###Install pyinstaller Option A:
 
 ```sh
 sudo zypper install pyinstaller
@@ -62,7 +70,7 @@ sudo zypper install pyinstaller
 
 If you get "'pyinstaller' not found in package names." Then you should add a repository for python with: Install pyinstaller Option B: (No repository)
 
-####Install pyinstaller Option B: (No repository)
+###Install pyinstaller Option B: (No repository)
 ####Please note this option uses a OpenSUSE repository which is free.  Only install on DEV/TEST or SANDBOX systems for testing purposes.  It is always best to have the paid for repositories for SLES on a SLES system.  Contact SUSE supoprt for the correct repository for your SLES version.
 
 ```sh
@@ -91,7 +99,7 @@ Check the version of pyinstaller.
 pyinstaller --version
 ```
 
-###Download files from Github Repository
+##Download files from Github Repository
 
 To download the files from the github repository, you can use the following command.  I did it to the root diretory. If you do it other directories then it is fine, just be sure to also make adjustments to later scripts like creating the executable file with pyinstaller, as they currently point to the tinyhanatools directory created from root /.
 

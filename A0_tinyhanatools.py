@@ -13,6 +13,7 @@
 #-------------------------------------------------------------------------------
 
 import os
+import sys
 import socket
 import a1_0_backup_recovery
 import a2_0_database_administration
@@ -26,11 +27,16 @@ import a9_0_userstore
 import showme
 import LICENSE
 
+VERSION = "1.06"
+
 def clear_screen():
     os.system('clear')
 
 def print_bold(text):
     print('\033[1m' + text + '\033[0m')
+
+def display_version():
+    print(f"MyProgram version {VERSION}")
 
 def display_main_menu(selected_userstore):
     clear_screen()
@@ -135,5 +141,8 @@ def main():
         choice = input('\033[1m' + text + '\033[0m')
         running = handle_menu_choice(choice, selected_userstore)
 
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] == "--version":
+        display_version()
+    else:
+        main()

@@ -12,6 +12,7 @@
 import os
 import socket
 import subprocess
+import getpass
 
 def clear_screen():
     os.system('clear')
@@ -64,7 +65,7 @@ def create_userstore_entry():
 
     key = input("Enter the userstore key: ")
     user = input("Enter the username: ")
-    password = input("Enter the password: ")
+    password = getpass.getpass("Enter the password: ")
     database = input("Enter the database name: ")
     host = os.uname()[1]
     port = input("Enter the port number: ")

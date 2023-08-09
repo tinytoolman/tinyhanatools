@@ -45,7 +45,7 @@ chown sidadm:sapsys /tinyhanatools/dist/A0_tinyhanatools
 
 sleep 1
 
-chmod +x /software/tinyhanatools/dist/A0_tinyhanatools
+chmod +x /tinyhanatools/dist/A0_tinyhanatools
 
 sleep 1
 
@@ -55,4 +55,4 @@ sleep 1
 
 #PLEASE CHANGE SID AND INSTANCE NUMBER BELOW!!!
 
-cp -p /software/tinyhanatools/dist/A0_tinyhanatools /usr/sap/SID/HDB??/exe/tinyhanatools
+cp -p /tinyhanatools/dist/A0_tinyhanatools /usr/sap/SID/HDB??/exe/tinyhanatools

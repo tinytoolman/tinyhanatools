@@ -166,6 +166,8 @@ chown sidadm:sapsys /tinyhanatools/dist/A0_tinyhanatools
 sleep 1
 #PLEASE CHANGE SID AND INSTANCE NUMBER BELOW!!!
 cp -p /tinyhanatools/dist/A0_tinyhanatools /usr/sap/SID/HDB??/exe/tinyhanatools
+#local copy
+cp -p /tinyhanatools/dist/A0_tinyhanatools /tinyhanatools/tinyhanatools
 ```
 
 To run the file please chmod +x 1_create_hanatools.sh first

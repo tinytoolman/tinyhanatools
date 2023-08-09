@@ -31,18 +31,18 @@ I created this file in the /tinyhanatools/ directory everytime I update the prog
 
 Contents:
 
-**rm -r __pycache__/ build/ dist A0_tinyhanatools.spec**
-**sleep 1**
-**pyinstaller --onefile --hidden-import=hdbcli A0_tinyhanatools.py**
-**sleep 1**
-**#PLEASE CHANGE SID BELOW!!!**
-**chown hadadm:sapsys /tinyhanatools/dist/A0_tinyhanatools**  
-**sleep 1**
-**chmod +x /software/tinyhanatools/dist/A0_tinyhanatools**
-**sleep 1**
-**chown hadadm:sapsys /tinyhanatools/dist/A0_tinyhanatools**
-**sleep 1**
-**#PLEASE CHANGE SID AND INSTANCE NUMBER BELOW!!!***
-**cp -p /software/tinyhanatools/dist/A0_tinyhanatools /usr/sap/<sid>/HDB##/exe/tinyhanatools**
+rm -r __pycache__/ build/ dist A0_tinyhanatools.spec 
+sleep 1 
+pyinstaller --onefile --hidden-import=hdbcli A0_tinyhanatools.py 
+sleep 1 
+#PLEASE CHANGE SID BELOW!!! 
+chown hadadm:sapsys /tinyhanatools/dist/A0_tinyhanatools 
+sleep 1 
+chmod +x /software/tinyhanatools/dist/A0_tinyhanatools 
+sleep 1 
+chown hadadm:sapsys /tinyhanatools/dist/A0_tinyhanatools 
+sleep 1 
+#PLEASE CHANGE SID AND INSTANCE NUMBER BELOW!!! 
+cp -p /software/tinyhanatools/dist/A0_tinyhanatools /usr/sap/<sid>/HDB##/exe/tinyhanatools 
 
 

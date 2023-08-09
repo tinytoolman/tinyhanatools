@@ -29,7 +29,7 @@ I created this file in the /tinyhanatools/ directory everytime I update the prog
 
 **vi 1_create_hanatools.sh**
 
-Contents:
+Contents: (Please also chmod +x 1_create_hanatools.sh before you run it)
 
 rm -r __pycache__/ build/ dist A0_tinyhanatools.spec
 

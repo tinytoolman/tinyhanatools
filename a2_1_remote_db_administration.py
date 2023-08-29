@@ -35,16 +35,12 @@ def handle_remote_db_administration_menu(selected_userstore):
     choice = input("\033[1m" + text + "\033[0m")
     if choice == '1':
         check_hana_status(selected_userstore)
-        input("Press Enter to continue...")
     elif choice == '2':
         hana_overview(selected_userstore)
-        input("Press Enter to continue...")
     elif choice == '3':
         start_full_db(selected_userstore)
-        input("Press Enter to continue...")
     elif choice == '4':
         stop_full_db(selected_userstore)
-        input("Press Enter to continue...")
     elif choice == '0':
         return
     elif choice.lower() =='x':

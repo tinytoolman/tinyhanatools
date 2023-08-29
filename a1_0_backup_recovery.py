@@ -13,6 +13,7 @@
 import os
 import socket
 import subprocess
+import getpass
 import a2_0_database_administration
 
 def clear_screen():
@@ -79,83 +80,266 @@ def handle_backup_recovery_menu(selected_userstore):
 def perform_full_backup(selected_userstore):
     clear_screen()
     a2_0_database_administration.check_installed_db(selected_userstore)
-    print(f"Performing Full Database Backup with userstore {selected_userstore}")
+    print(f"\nPerforming Full Database Backup with userstore {selected_userstore}\n")
 
-    db_name = input("Enter the name of the database to perform a full backup: ")
-    backup_path = input("Enter the full backup file directory path: ")
+    db_name = input("Enter the name of the database to perform a full backup [SYSTEMDB]: ") or 'SYSTEMDB'
+
+    attempts = 0
+    attempts2 = 0
+    while attempts < 2:
+        backup_path = input("Enter the full backup file directory path: ")
+        if not backup_path:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        elif not os.path.exists(backup_path):
+            attempts2 += 1
+            print("Invalid location, Directory locacation does not exist.")
+            if attempts2 == 2:
+                return
+            continue
+        else:
+            break
 
     key = selected_userstore.split()[1]
     command = ["hdbsql", "-U", key, "-d", "SYSTEMDB"]
 
-    try:
-        sql_script = f"BACKUP DATA FOR {db_name} USING FILE ('{backup_path}', '{db_name}_FULL');"
-        subprocess.run(command, input=sql_script, encoding='utf-8', check=True)
-        print(f"Database '{db_name}' backed up successfully.")
-        #input("Press any key to continue...")
-    except subprocess.CalledProcessError as ex:
-        print(f"Error backing up database: {ex.stderr}")
-    except Exception as ex:
-        print(f"Error backing up database: {str(ex)}")
+    attempts = 0
+    attempts2 = 0
+    while attempts < 2:
+        user_input = input("To start the " + str(db_name) + " backup enter 'backup': ")
+        if not user_input:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        elif user_input.lower() != 'backup':
+            attempts2 += 1
+            print("Value entered is not equal to \033[1mbackup\033[0m")
+            if attempts2 == 2:
+                return
+            continue
+        else:
+            break
+
+    if user_input.lower() == 'backup':
+        try:
+            sql_script = f"BACKUP DATA FOR {db_name} USING FILE ('{backup_path}', '{db_name}_FULL');"
+            print("Command: " + str(sql_script))
+            input("Press Enter to continue...")
+            subprocess.run(command, input=sql_script, encoding='utf-8', check=True)
+            print(f"Database '{db_name}' backed up successfully.")
+            #input("Press any key to continue...")
+        except subprocess.CalledProcessError as ex:
+            print(f"Error backing up database: {ex.stderr}")
+        except Exception as ex:
+            print(f"Error backing up database: {str(ex)}")
 
 def perform_incremental_backup(selected_userstore):
     clear_screen()
     a2_0_database_administration.check_installed_db(selected_userstore)
     print(f"Performing Incremental Backup with userstore {selected_userstore}")
 
-    db_name = input("Enter the name of the database to perform an incremental backup: ")
-    backup_path = input("Enter the backup file directory path: ")
+    db_name = input("Enter the name of the database to perform an incremental backup [SYSTEMDB]: ") or 'SYSTEMDB'
+
+    attempts = 0
+    attempts2 = 0
+    while attempts < 2:
+        backup_path = input("Enter the full backup file directory path: ")
+        if not backup_path:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        elif not os.path.exists(backup_path):
+            attempts2 += 1
+            print("Invalid location, Directory locacation does not exist.")
+            if attempts2 == 2:
+                return
+            continue
+        else:
+            break
 
     key = selected_userstore.split()[1]
     command = ["hdbsql", "-U", key, "-d", "SYSTEMDB"]
 
-    try:
-        sql_script = f"BACKUP DATA INCREMENTAL FOR {db_name} USING FILE ('{backup_path}', '{db_name}');"
-        subprocess.run(command, input=sql_script, encoding='utf-8', check=True)
-        print(f"Database '{db_name}' incrementally backed up successfully.")
-    except subprocess.CalledProcessError as ex:
-        print(f"Error performing incremental backup: {ex.stderr}")
-    except Exception as ex:
-        print(f"Error performing incremental backup: {str(ex)}")
+    attempts = 0
+    attempts2 = 0
+    while attempts < 2:
+        user_input = input("To start the " + str(db_name) + " incremental backup enter 'backup': ")
+        if not user_input:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        elif user_input.lower() != 'backup':
+            attempts2 += 1
+            print("Value entered is not equal to \033[1mbackup\033[0m")
+            if attempts2 == 2:
+                return
+            continue
+        else:
+            break
+
+    if user_input.lower() == 'backup':
+        try:
+            sql_script = f"BACKUP DATA INCREMENTAL FOR {db_name} USING FILE ('{backup_path}', '{db_name}');"
+            print("Command: " + str(sql_script))
+            input("Press Enter to continue...")
+            subprocess.run(command, input=sql_script, encoding='utf-8', check=True)
+            print(f"Database '{db_name}' incrementally backed up successfully.")
+        except subprocess.CalledProcessError as ex:
+            print(f"Error performing incremental backup: {ex.stderr}")
+        except Exception as ex:
+            print(f"Error performing incremental backup: {str(ex)}")
 
 def perform_differential_backup(selected_userstore):
     clear_screen()
     a2_0_database_administration.check_installed_db(selected_userstore)
     print(f"Performing Differential Backup with userstore {selected_userstore}")
 
-    db_name = input("Enter the name of the database to perform a differential backup: ")
-    backup_path = input("Enter the backup file directory path: ")
+    db_name = input("Enter the name of the database to perform a differential backup [SYSTEMDB]: ") or 'SYSTEMDB'
+
+    attempts = 0
+    attempts2 = 0
+    while attempts < 2:
+        backup_path = input("Enter the full backup file directory path: ")
+        if not backup_path:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        elif not os.path.exists(backup_path):
+            attempts2 += 1
+            print("Invalid location, Directory locacation does not exist.")
+            if attempts2 == 2:
+                return
+            continue
+        else:
+            break
 
     key = selected_userstore.split()[1]
     command = ["hdbsql", "-U", key, "-d", "SYSTEMDB"]
 
-    try:
-        sql_script = f"BACKUP DATA DIFFERENTIAL FOR {db_name} USING FILE ('{backup_path}', '{db_name}');"
-        subprocess.run(command, input=sql_script, encoding='utf-8', check=True)
-        print(f"Database '{db_name}' differentially backed up successfully.")
-    except subprocess.CalledProcessError as ex:
-        print(f"Error performing differential backup: {ex.stderr}")
-    except Exception as ex:
-        print(f"Error performing differential backup: {str(ex)}")
+    attempts = 0
+    attempts2 = 0
+    while attempts < 2:
+        user_input = input("To start the " + str(db_name) + " differential backup enter 'backup': ")
+        if not user_input:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        elif user_input.lower() != 'backup':
+            attempts2 += 1
+            print("Value entered is not equal to \033[1mbackup\033[0m")
+            if attempts2 == 2:
+                return
+            continue
+        else:
+            break
+
+    if user_input.lower() == 'backup':
+        try:
+            sql_script = f"BACKUP DATA DIFFERENTIAL FOR {db_name} USING FILE ('{backup_path}', '{db_name}');"
+            print("Command: " + str(sql_script))
+            input("Press Enter to continue...")
+            subprocess.run(command, input=sql_script, encoding='utf-8', check=True)
+            print(f"Database '{db_name}' differentially backed up successfully.")
+        except subprocess.CalledProcessError as ex:
+            print(f"Error performing differential backup: {ex.stderr}")
+        except Exception as ex:
+            print(f"Error performing differential backup: {str(ex)}")
 
 def perform_tenant_database_full_recovery(selected_userstore):
     clear_screen()
-    a2_0_database_administration.check_installed_db(selected_userstore)
+    a2_0_database_administration.check_installed_tenant_db(selected_userstore)
     print("Performing Database Recovery")
 
-    db_name = input("Enter the name of the database to perform the recovery: ")
-    backup_path = input("Enter the backup file directory path: ")
+    attempts = 0
+    while attempts < 2:
+        db_name = input("Enter the name of the database to perform the recovery (Enter SID): ")
+        if not db_name:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                return
+            continue
+        else:
+            break
+
+    attempts = 0
+    attempts2 = 0
+    while attempts < 2:
+        backup_path = input("Enter the full backup file directory path: ")
+        if not backup_path:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        elif not os.path.exists(backup_path):
+            attempts2 += 1
+            print("Invalid location, Directory locacation does not exist.")
+            if attempts2 == 2:
+                return
+            continue
+        else:
+            break
 
     key = selected_userstore.split()[1]
     command = ["hdbsql", "-U", key, "-d", "SYSTEMDB"]
 
-    try:
+    attempts = 0
+    attempts2 = 0
+    while attempts < 2:
+        user_input = input("To start Tenant Database Recovery type 'recover': ")
+        if not user_input:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        elif user_input.lower() != 'recover':
+            attempts2 += 1
+            print("Value entered is not equal to \033[1mrecover\033[0m")
+            if attempts2 == 2:
+                return
+            continue
+        else:
+            break
+
+    if user_input.lower() == 'recover':
         sql_script = f"RECOVER DATA FOR {db_name} USING FILE ('{backup_path}/{db_name}_FULL') CLEAR LOG;"
-        subprocess.run(command, input=sql_script, encoding='utf-8', check=True)
-        print(f"Database '{db_name}' recovered successfully.")
-    except subprocess.CalledProcessError as ex:
-        print(f"Error recovering database: {ex.stderr}")
-    except Exception as ex:
-        print(f"Error recovering database: {str(ex)}")
+        print("Recover Tenant Data command to be executed:")
+        print(sql_script)
+        input("Press Enter to continue...")
+
+        try:
+            sql_script = f"RECOVER DATA FOR {db_name} USING FILE ('{backup_path}/{db_name}_FULL') CLEAR LOG;"
+            subprocess.run(command, input=sql_script, encoding='utf-8', check=True)
+            print(f"Database '{db_name}' recovered successfully.")
+        except subprocess.CalledProcessError as ex:
+            print(f"Error recovering database: {ex.stderr}")
+        except Exception as ex:
+            print(f"Error recovering database: {str(ex)}")
+    else:
+        print("Invalid input. Tenant Recovery aborted. Exiting function")
 
 def perform_systemdb_full_recovery(selected_userstore):
     clear_screen()
@@ -164,56 +348,22 @@ def perform_systemdb_full_recovery(selected_userstore):
     key = selected_userstore.split()[1]
     command = ["HDBSettings.sh", "recoverSys.py"]
 
-    try:
-        subprocess.run(command, encoding='utf-8', check=True)
-        print(f"Database '{db_name}' recovered successfully.")
-    except subprocess.CalledProcessError as ex:
-        print(f"Error recovering database: {ex.stderr}")
-    except Exception as ex:
-        print(f"Error recovering database: {str(ex)}")
-
-#def perform_tenant_recovery(selected_userstore):
-#    print(f"Performing Log Backup and Recovery with userstore {selected_userstore}")
-'''
-def verify_backup(selected_userstore):
-    while True:
-        clear_screen()
-        print("Verify Backup")
-        print("-------------")
-        print("0. Back to Previous Menu")
-        print("------------------------")
-
-        backup_dir = input("Enter the backup directory path: ")
-        if backup_dir == '0':
-            return
-        backup_files = os.listdir(backup_dir)
-
-        if not backup_files:
-            print("No backup files found in the specified directory.")
-            input("Press Enter to continue...")
-            continue
-
-        print("Backup Files:")
-        for i, file in enumerate(backup_files, start=1):
-            print(f"{i}. {file}")
-
+    user_input = input("To start SystemDB Recovery type 'recover': ")
+    if user_input.lower() == 'recover':
+        print("Command: " + command)
         print("")
-
-        choice = input("Enter the number corresponding to the file to verify (or 0 to go back): ")
-        if choice == '0':
-            return
-        elif choice.isdigit():
-            index = int(choice) - 1
-            if 0 <= index < len(backup_files):
-                file_to_check = os.path.join(backup_dir, backup_files[index])
-                run_backup_check(file_to_check)
-            else:
-                print("Invalid choice. Please try again.")
-        else:
-            print("Invalid choice. Please try again.")
-
         input("Press Enter to continue...")
-'''
+
+        try:
+            subprocess.run(command, encoding='utf-8', check=True)
+            print(f"Database '{db_name}' recovered successfully.")
+        except subprocess.CalledProcessError as ex:
+            print(f"Error recovering database: {ex.stderr}")
+        except Exception as ex:
+            print(f"Error recovering database: {str(ex)}")
+    else:
+        print("Invalid input. SystemDB Recovery aborted. Exiting function")
+
 def verify_backup(selected_userstore):
     while True:
         clear_screen()
@@ -222,7 +372,28 @@ def verify_backup(selected_userstore):
         print("0. Back to Previous Menu")
         print("------------------------")
 
-        backup_dir = input("Enter the backup directory path: ")
+        attempts = 0
+        attempts2 = 0
+        while attempts < 2:
+            backup_dir = input("Enter the backup directory path: ")
+            if not backup_dir:
+                attempts += 1
+                print("Nothing entered.")
+                if attempts == 2:
+                    return
+                continue
+            elif backup_dir == '0':
+                return
+            elif not os.path.exists(backup_dir):
+                attempts2 += 1
+                print("Invalid location, Directory loccation does not exist.")
+                if attempts2 == 2:
+                    return
+                continue
+            else:
+                break
+
+        '''
         if backup_dir == '0':
             return
         if not backup_dir:
@@ -233,6 +404,7 @@ def verify_backup(selected_userstore):
             print("The specified backup directory does not exist.")
             input("Press Enter to continue...")
             continue
+        '''
 
         backup_files = os.listdir(backup_dir)
 
@@ -277,7 +449,26 @@ def run_backup_check(backup_file):
 def delete_backup_file():
     clear_screen()
     while True:
-        backup_dir = input("Enter the backup directory path: ")
+        attempts = 0
+        attempts2 = 0
+        while attempts < 2:
+            backup_dir = input("Enter the backup directory path: ")
+            if not backup_dir:
+                attempts += 1
+                print("Nothing entered.")
+                if attempts == 2:
+                    print("Going back to menu.")
+                    return
+                continue
+            elif not os.path.exists(backup_dir):
+                attempts2 += 1
+                print("Invalid location, Directory locacation does not exist.")
+                if attempts2 == 2:
+                    return
+                continue
+            else:
+                break
+
         backup_files = os.listdir(backup_dir)
 
         if not backup_files:
@@ -306,8 +497,10 @@ def delete_backup_file():
                     else:
                         print("Deletion canceled.")
                 else:
+                    clear_screen()
                     print("Invalid choice. Please try again.")
             else:
+                clear_screen()
                 print("Invalid choice. Please try again.")
 
             remaining_files = os.listdir(backup_dir)
@@ -336,16 +529,43 @@ def delete_backup_file():
                     else:
                         print("Deletion canceled.")
                 else:
+                    clear_screen()
                     print("Invalid choice. Please try again.")
             else:
+                clear_screen()
                 print("Invalid choice. Please try again.")
 
 def create_backup_operator_user(selected_userstore):
     clear_screen()
     print("Creating Backup Operator User")
 
-    username = input("Enter the username for the new backup operator: ")
-    password = input("Enter the password for the new backup operator: ")
+    attempts = 0
+    attempts2 = 0
+    while attempts < 2:
+        username = input("Enter the username for the new backup operator: ")
+        if not username:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
+
+    attempts = 0
+    attempts2 = 0
+    while attempts < 2:
+        password = getpass.getpass("Enter the password for the new backup operator: ")
+        if not password:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
 
     key = selected_userstore.split()[1]
     command = ["hdbsql", "-U", key, "-d", "SYSTEMDB"]

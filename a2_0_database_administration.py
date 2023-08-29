@@ -12,6 +12,7 @@
 import os
 import socket
 import subprocess
+import getpass
 import a2_1_remote_db_administration
 
 def clear_screen():
@@ -74,7 +75,6 @@ def handle_database_administration_menu(selected_userstore):
     else:
         print("Invalid choice. Please try again.")
 
-    # Wait for user input to return to the database administration menu
     input("Press Enter to continue...")
     handle_database_administration_menu(selected_userstore)
 
@@ -91,6 +91,7 @@ def check_hana_status(selected_userstore):
 
     # Run the sapcontrol command
     command = ["sapcontrol", "-nr", tinstance, "-function", "GetProcessList"]
+    print("Command: ", " ".join(command))
 
     try:
         subprocess.run(command, check=True)
@@ -125,6 +126,8 @@ def hana_overview(selected_userstore):
 
     # Run the systemOverview.py script
     command = ["python", "systemOverview.py"]
+    print("Command:", " ".join(command))
+
     try:
         subprocess.run(command, check=True)
     except subprocess.CalledProcessError as ex:
@@ -133,6 +136,55 @@ def hana_overview(selected_userstore):
     except Exception as ex:
         print(f"Error running systemOverview.py: {str(ex)}")
 
+import csv
+
+def check_installed_db(selected_userstore):
+    clear_screen()
+    key = selected_userstore.split()[1]
+    command = ["hdbsql", "-U", key, "-d", "SYSTEMDB"]
+    sql_script = 'SELECT * FROM "SYS"."M_DATABASES";'
+    print("Command: ", " ".join(command) + " : " + str(sql_script) + "\n")
+
+    try:
+        result = subprocess.run(command, input=sql_script, encoding='utf-8', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if result.returncode == 0:
+            output = result.stdout
+            # Split the output into lines
+            lines = output.splitlines()
+
+            # Ignore the first 6 lines
+            lines = lines[7:]
+
+            for idx, line in enumerate(lines, 1):
+                # Check for a summary line at the end and break if found
+                if line.strip() and line.strip()[0].isdigit():
+                    break
+
+                # Split by comma
+                parts = line.split(',')
+
+                # Check that there are enough parts
+                if len(parts) < 3:
+                    print(f"Unexpected format on line {idx}: {line}")
+                    continue
+
+                # Extract and format the data
+                database_name = parts[0].replace('\"', '')
+                description = parts[1].replace('\"', '')
+                active_status = parts[2].replace('\"', '')
+                #formatted_output = f"{idx}. Database: {database_name}, Description: {description}, Active: {active_status}"
+                #Description removed, not sure if supported for createing new DB, also removed from def create_tenant_db
+                formatted_output = f"{idx}. Database: {database_name}, Active: {active_status}"
+                print(formatted_output)
+
+        else:
+            print(f"Error executing command: {result.stderr}")
+    except subprocess.CalledProcessError as ex:
+        print(f"Error executing command: {str(ex)}")
+    except Exception as ex:
+        print(f"Error executing command: {str(ex)}")
+
+'''OLD Definition with no formatting
 def check_installed_db(selected_userstore):
     clear_screen()
     key = selected_userstore.split()[1]
@@ -149,6 +201,56 @@ def check_installed_db(selected_userstore):
         print(f"Error executing command: {str(ex)}")
     except Exception as ex:
         print(f"Error executing command: {str(ex)}")
+'''
+
+def check_installed_tenant_db(selected_userstore):
+    clear_screen()
+    key = selected_userstore.split()[1]
+    command = ["hdbsql", "-U", key, "-d", "SYSTEMDB"]
+    sql_script = 'SELECT * FROM "SYS"."M_DATABASES";'
+    print("Command: ", " ".join(command) + " : " + str(sql_script) + "\n")
+
+    try:
+        result = subprocess.run(command, input=sql_script, encoding='utf-8', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if result.returncode == 0:
+            output = result.stdout
+            # Split the output into lines
+            lines = output.splitlines()
+
+            # Ignore the first 6 lines
+            lines = lines[7:]
+
+            for idx, line in enumerate(lines, 1):
+                # Check for a summary line at the end and break if found
+                if line.strip() and line.strip()[0].isdigit():
+                    break
+
+                # Split by comma
+                parts = line.split(',')
+
+                # Check that there are enough parts
+                if len(parts) < 3:
+                    print(f"Unexpected format on line {idx}: {line}")
+                    continue
+
+                # Extract and format the data
+                database_name = parts[0].replace('\"', '')
+                description = parts[1].replace('\"', '')
+                active_status = parts[2].replace('\"', '')
+
+                # Skip the database with the name "SYSTEMDB"
+                if database_name == "SYSTEMDB":
+                    continue
+
+                formatted_output = f"{idx}. Database: {database_name}, Active: {active_status}"
+                print(formatted_output)
+
+        else:
+            print(f"Error executing command: {result.stderr}")
+    except subprocess.CalledProcessError as ex:
+        print(f"Error executing command: {str(ex)}")
+    except Exception as ex:
+        print(f"Error executing command: {str(ex)}")
 
 def start_full_db(selected_userstore):
     clear_screen()
@@ -156,7 +258,7 @@ def start_full_db(selected_userstore):
 
     key = selected_userstore.split()[1]
     command = ["HDB", "start"]
-
+    print("Command: ", " ".join(command))
     user_input = input("To start the Full HANA database, type 'start': ")
 
     if user_input.lower() == 'start':
@@ -176,7 +278,7 @@ def stop_full_db(selected_userstore):
 
     key = selected_userstore.split()[1]
     command = ["HDB", "stop"]
-
+    print("Command:", " ".join(command))
     user_input = input("To stop the Full HANA database, type 'stop': ")
 
     if user_input.lower() == 'stop':
@@ -205,9 +307,10 @@ def start_tenant_db(selected_userstore):
     if user_input.lower() == 'start':
         try:
             sql_script = f"ALTER SYSTEM START DATABASE {db_name};"
+            print("Command: ", " ".join(command) + " : " + str(sql_script) + "\n")
             subprocess.run(command, input=sql_script, encoding='utf-8', check=True)
             print(f"Tenant database '{db_name}' started successfully.")
-            input("Press any key to continue...")
+            input("Press Enter to continue...")
         except subprocess.CalledProcessError as ex:
             print(f"Error starting tenant database: {ex.stderr}")
         except Exception as ex:
@@ -233,9 +336,10 @@ def stop_tenant_db(selected_userstore):
     if user_input.lower() == 'stop':
         try:
             sql_script = f"ALTER SYSTEM STOP DATABASE {db_name};"
+            print("Command: ", " ".join(command) + " : " + str(sql_script) + "\n")
             subprocess.run(command, input=sql_script, encoding='utf-8', check=True)
             print(f"Tenant database '{db_name}' stopped successfully.")
-            input("Press any key to continue...")
+            input("Press Enter to continue...")
         except subprocess.CalledProcessError as ex:
             print(f"Error stopping tenant database: {ex.stderr}")
         except Exception as ex:
@@ -252,38 +356,61 @@ def create_tenant_db(selected_userstore):
 
     db_name = input("Enter the name for the new tenant database: ")
     db_user = input("Enter the database user: ")
-    db_password = input("Enter the database password: ")
+    db_password = getpass.getpass("Enter the database password: ")
+    db_description = input("Enter a Description for the Database: ")
 
     key = selected_userstore.split()[1]
     command = ["hdbsql", "-U", key, "-d", "SYSTEMDB"]
 
-    try:
-        sql_script = f"CREATE DATABASE {db_name} {db_user} USER PASSWORD {db_password};"
-        subprocess.run(command, input=sql_script, encoding='utf-8', check=True)
-        print(f"Tenant database '{db_name}' created successfully.")
-    except subprocess.CalledProcessError as ex:
-        print(f"Error creating tenant database: {ex.stderr}")
-    except Exception as ex:
-        print(f"Error creating tenant database: {str(ex)}")
+    user_input = input("To create new Tenant DB named " + str(db_name) + " type 'create': ")
+
+    if user_input.lower() == 'create':
+        try:
+            sql_script = f"CREATE DATABASE {db_name} {db_user} USER PASSWORD {db_password};"
+            masked_password = "#" * len(db_password)
+            print_sql_script = sql_script.replace(db_password, masked_password)
+            print("Command: ", " ".join(command) + " : " + str(print_sql_script) + "\n")
+            subprocess.run(command, input=sql_script, encoding='utf-8', check=True)
+            print(f"Tenant database '{db_name}' created successfully.")
+        except subprocess.CalledProcessError as ex:
+            print(f"Error creating tenant database: {ex.stderr}")
+        except Exception as ex:
+            print(f"Error creating tenant database: {str(ex)}")
+
+        '''Not sure if description addition is supported
+        try:
+            sql_alter_des = f"ALTER DATABASE {db_name} ALTER DESCRIPTION TO '{db_description}';"
+            print("Command: ", " ".join(command) + " : " + str(sql_alter_des) + "\n")
+            subprocess.run(command, input=sql_alter_des, encoding='utf-8', check=True)
+            print(f"Tenant database '{db_name}' altered description successfully.")
+        except subprocess.CalledProcessError as ex:
+            print(f"Error creating tenant database: {ex.stderr}")
+        except Exception as ex:
+            print(f"Error creating tenant database: {str(ex)}")
+        '''
 
 def delete_tenant_database(selected_userstore):
     clear_screen()
     check_installed_db(selected_userstore)
-    print("Creating Tenant Database")
+    print("Delete Tenant Database")
 
-    db_name = input("Enter the name for the new tenant database: ")
+    db_name = input("Enter the name for the tenant database to delete: ")
 
     key = selected_userstore.split()[1]
     command = ["hdbsql", "-U", key, "-d", "SYSTEMDB"]
 
-    try:
-        sql_script = f"DROP DATABASE {db_name};"
-        subprocess.run(command, input=sql_script, encoding='utf-8', check=True)
-        print(f"Tenant database '{db_name}' deleted successfully.")
-    except subprocess.CalledProcessError as ex:
-        print(f"Error deleting tenant database: {ex.stderr}")
-    except Exception as ex:
-        print(f"Error deleting tenant database: {str(ex)}")
+    user_input = input("To delete the " + str(db_name) + " Tenant DB, type 'delete': ")
+
+    if user_input.lower() == 'delete':
+        try:
+            sql_script = f"DROP DATABASE {db_name};"
+            print("Command: ", " ".join(command) + " : " + str(sql_script) + "\n")
+            subprocess.run(command, input=sql_script, encoding='utf-8', check=True)
+            print(f"Tenant database '{db_name}' deleted successfully.")
+        except subprocess.CalledProcessError as ex:
+            print(f"Error deleting tenant database: {ex.stderr}")
+        except Exception as ex:
+            print(f"Error deleting tenant database: {str(ex)}")
 
 def show_db_parameters(selected_userstore):
     clear_screen()

@@ -20,47 +20,47 @@ def print_bold(text):
     print('\033[1m' + text + '\033[0m')
 
 def handle_modify_user_menu(selected_userstore):
-    while True:
+    clear_screen()
+    hostname = socket.gethostname()
+    print_bold(f"Modify User - {hostname}")
+    print_bold("-------------------")
+    print("1.  Change Password")
+    print("2.  Lock/Unlock User Account")
+    print("3.  Grant/Revoke Roles")
+    print("4.  Check Assigned Roles/Privileges")
+    print("5.  Set Password Lifetime Enable/Disable")
+    print("6.  Change User Validity")
+    print("7.  Check User Attributes")
+    print("0.  Back")
+    print_bold("-------------------")
+
+    text = "Enter your choice: "
+    choice = input("\033[1m" + text + "\033[0m")
+    if choice == '1':
+        change_password(selected_userstore)
+    elif choice == '2':
+        lock_unlock_account(selected_userstore)
+    elif choice == '3':
+        grant_revoke_roles(selected_userstore)
+    elif choice == '4':
+        check_assigned_role_priv(selected_userstore)
+    elif choice == '5':
+        set_password_lifetime(selected_userstore)
+    elif choice == '6':
+        change_user_validity(selected_userstore)
+    elif choice == '7':
+        check_user_attributes(selected_userstore)
+    elif choice == '0':
+        return
+    elif choice.lower() =='x':
         clear_screen()
-        hostname = socket.gethostname()
-        print_bold(f"Modify User - {hostname}")
-        print_bold("-------------------")
-        print("1.  Change Password")
-        print("2.  Lock/Unlock User Account")
-        print("3.  Grant/Revoke Roles")
-        print("4.  Check Assigned Roles/Privileges")
-        print("5.  Set Password Lifetime Enable/Disable")
-        print("6.  Change User Validity")
-        print("7.  Check User Attributes")
-        print("0.  Back")
-        print_bold("-------------------")
+        print("Tiny HANA Tools Exit...")
+        os._exit(0)
+    else:
+        print("Invalid choice. Please try again.")
 
-        text = "Enter your choice: "
-        choice = input("\033[1m" + text + "\033[0m")
-        if choice == '1':
-            change_password(selected_userstore)
-        elif choice == '2':
-            lock_unlock_account(selected_userstore)
-        elif choice == '3':
-            grant_revoke_roles(selected_userstore)
-        elif choice == '4':
-            check_assigned_role_priv(selected_userstore)
-        elif choice == '5':
-            set_password_lifetime(selected_userstore)
-        elif choice == '6':
-            change_user_validity(selected_userstore)
-        elif choice == '7':
-            check_user_attributes(selected_userstore)
-        elif choice == '0':
-            return
-        elif choice.lower() =='x':
-            clear_screen()
-            print("Tiny HANA Tools Exit...")
-            os._exit(0)
-        else:
-            print("Invalid choice. Please try again.")
-
-        input("Press Enter to continue...")
+    input("Press Enter to continue...")
+    handle_modify_user_menu(selected_userstore)
 
 def change_password(selected_userstore):
     clear_screen()

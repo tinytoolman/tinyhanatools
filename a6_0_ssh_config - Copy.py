@@ -60,26 +60,25 @@ def handle_ssh_config_menu():
     handle_ssh_config_menu()
 
 def get_ssh_hosts():
-    home = os.environ['HOME']
-    json_path = os.path.join(home, '.ssh_hosts.json')
-    try:
-        with open(json_path) as f:
-            hosts_data = json.load(f)
-        return hosts_data
-    except:
-        return []
+  home = os.environ['HOME']
+  json_path = os.path.join(home, '.ssh_hosts.json')
+  try:
+    with open(json_path) as f:
+      hosts = json.load(f)
+    return hosts
+  except:
+    return []
 
-def update_ssh_hosts(hosts_data):
-    # Convert list of dictionaries to a list of tuples
-    unique_hosts = list(set((entry['hostname'], entry['username']) for entry in hosts_data))
-
-    # Convert back to the original list of dictionaries
-    unique_hosts_data = [{'hostname': hostname, 'username': username} for hostname, username in unique_hosts]
-
+def update_ssh_hosts(hosts):
+    # Check for duplicate host names
+    unique_hosts = list(set(hosts))
+    if len(unique_hosts) != len(hosts):
+        print("Duplicate host names found. Aborting update.")
+        return
     home = os.environ['HOME']
     json_path = os.path.join(home, '.ssh_hosts.json')
     with open(json_path, 'w') as f:
-        json.dump(unique_hosts_data, f, indent=4)  # Indent for better readability
+        json.dump(hosts, f)
 
 def setup_new_ssh_host():
     attempts = 0
@@ -106,12 +105,11 @@ def setup_new_ssh_host():
         else:
             break
 
-    hosts_data = get_ssh_hosts()
-    for host_entry in hosts_data:
-        if host_entry['hostname'] == hostname and host_entry['username'] == username:
-            print("Hostname and username combination already exists.")
-            input("Press Enter to continue...")
-            return
+    hosts = get_ssh_hosts()
+    if hostname in hosts:
+        print("Hostname already exists.")
+        input("Press Enter to continue...")
+        return
 
     # Generate SSH key pair
     ssh_keygen_command = ["ssh-keygen", "-t", "rsa"]
@@ -128,23 +126,65 @@ def setup_new_ssh_host():
 
     if proc.returncode == 0:
         print("SSH host setup successful")
-        hosts_data.append({'hostname': hostname, 'username': username})
-        update_ssh_hosts(hosts_data)
+        hosts.append(hostname)
+        update_ssh_hosts(hosts)
     else:
         print(f"Error setting up SSH host: {err}")
 
-def test_ssh_host():
-    hosts_data = get_ssh_hosts()
 
-    if not hosts_data:
+'''
+def setup_new_ssh_host():
+    attempts = 0
+    while attempts < 2:
+        hostname = input("Enter hostname: ")
+        if not hostname:
+            attempts +=1
+            print("Nothing entered.")
+            if attempts == 2:
+                return
+            continue
+        else:
+            break
+
+    hosts = get_ssh_hosts()
+    if hostname in hosts:
+        print("Hostname already exists.")
+        input("Press Enter to continue...")
+        return
+
+    # Generate SSH key pair
+    ssh_keygen_command = ["ssh-keygen", "-t", "rsa"]
+    subprocess.run(ssh_keygen_command)
+
+    # Add private key to SSH agent
+    ssh_add_command = ["ssh-add", os.path.expanduser("~/.ssh/id_rsa")]
+    subprocess.run(ssh_add_command)
+
+    # Copy public key to remote host
+    ssh_copy_id_command = ["ssh-copy-id", hostname]
+    proc = subprocess.Popen(ssh_copy_id_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = proc.communicate()
+
+    if proc.returncode == 0:
+        print("SSH host setup successful")
+        hosts.append(hostname)
+        update_ssh_hosts(hosts)
+    else:
+        print(f"Error setting up SSH host: {err}")
+'''
+
+def test_ssh_host():
+    hosts = get_ssh_hosts()
+
+    if not hosts:
         print("No hosts configured")
         input("Press Enter to continue...")
         return
 
     print("Configured SSH Hosts:")
 
-    for i, host_entry in enumerate(hosts_data, 1):
-        print(f"{i}. {host_entry['hostname']} : {host_entry['username']}")
+    for i, host in enumerate(hosts):
+        print(f"{i+1}. {host}")
 
     attempts = 0
     while attempts < 2:
@@ -159,21 +199,18 @@ def test_ssh_host():
             break
 
     try:
-        host_entry = hosts_data[int(host_idx) - 1]
+        host = hosts[int(host_idx)-1]
     except (ValueError, IndexError):
         print("Invalid host selection")
         input("Press Enter to continue...")
         return
 
-    hostname = host_entry['hostname']
-    username = host_entry['username']
-
-    proc = subprocess.Popen(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5", f"{username}@{hostname}", "echo", "SSH test OK"],
+    proc = subprocess.Popen(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5", host, "echo", "SSH test OK"],
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = proc.communicate()
 
     if proc.returncode == 0:
-        print(f"SSH connection successful to {hostname}")
+        print(f"SSH connection successful to {host}")
     else:
         print(f"SSH test failed: {err}")
 
@@ -187,8 +224,8 @@ def connect_ssh_host():
 
     print("Configured SSH Hosts:")
 
-    for i, host_entry in enumerate(hosts, 1):
-        print(f"{i}. {host_entry['hostname']} : {host_entry['username']}")
+    for i, host in enumerate(hosts):
+        print(f"{i+1}. {host}")
 
     attempts = 0
     while attempts < 2:
@@ -203,66 +240,13 @@ def connect_ssh_host():
             break
 
     try:
-        host_entry = hosts[int(host_idx)-1]
-    except (ValueError, IndexError):
-        print("Invalid host selection")
-        input("Press Enter to continue...")
+        host = hosts[int(host_idx)-1]
+    except IndexError:
+        print("Invalid host number")
         return
 
-    hostname = host_entry['hostname']
-    username = host_entry['username']
+    subprocess.call(["ssh", host])
 
-    ssh_command = ["ssh", f"{username}@{hostname}"]
-    subprocess.call(ssh_command)
-
-def delete_ssh_host_config():
-    hosts = get_ssh_hosts()
-
-    if not hosts:
-        print("No hosts configured")
-        input("Press Enter to continue...")
-        return
-
-    print("Configured SSH Hosts:")
-
-    for i, host_entry in enumerate(hosts, 1):
-        print(f"{i}. {host_entry['hostname']} : {host_entry['username']}")
-
-    attempts = 0
-    while attempts < 2:
-        host_idx = input("Select host number: ")
-        if not host_idx:
-            attempts += 1
-            print("No host selected")
-            if attempts == 2:
-                return
-            continue
-        else:
-            break
-
-    try:
-        host_to_delete = hosts[int(host_idx)-1]
-    except (ValueError, IndexError):
-        print("Invalid host selection")
-        input("Press Enter to continue...")
-        return
-
-    hostname = host_to_delete['hostname']
-    username = host_to_delete['username']
-
-    ssh_keygen_command = ["ssh-keygen", "-R", f"{hostname}"]
-    proc = subprocess.Popen(ssh_keygen_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = proc.communicate()
-
-    if proc.returncode == 0:
-        print(f"{hostname} config removed")
-        hosts.remove(host_to_delete)
-        update_ssh_hosts(hosts)
-    else:
-        print(f"Error deleting host {hostname}: {err}")
-
-
-'''
 def delete_ssh_host_config():
     hosts = get_ssh_hosts()
 
@@ -304,7 +288,6 @@ def delete_ssh_host_config():
         update_ssh_hosts(hosts)
     else:
         print(f"Error deleting host {host_to_delete}: {err}")
-'''
 
 def add_hostname_to_repository():
     hosts = get_ssh_hosts()

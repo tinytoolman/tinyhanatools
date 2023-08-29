@@ -63,12 +63,77 @@ def create_userstore_entry():
     clear_screen()
     print("Creating Userstore Entry")
 
-    key = input("Enter the userstore key: ")
-    user = input("Enter the username: ")
-    password = getpass.getpass("Enter the password: ")
-    database = input("Enter the database name: ")
+    attempts = 0
+    while attempts < 2:
+        key = input("Enter the userstore key: ")
+        if not key:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                input("Press Enter to continue...")
+                return
+            continue
+        else:
+            break
+
+    attempts = 0
+    while attempts < 2:
+        user = input("Enter the username: ")
+        if not user:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                input("Press Enter to continue...")
+                return
+            continue
+        else:
+            break
+
+    attempts = 0
+    while attempts < 2:
+        password = getpass.getpass("Enter the password: ")
+        if not password:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                input("Press Enter to continue...")
+                return
+            continue
+        else:
+            break
+
+    attempts = 0
+    while attempts < 2:
+        database = input("Enter the database name: ")
+        if not database:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                input("Press Enter to continue...")
+                return
+            continue
+        else:
+            break
+
     host = os.uname()[1]
-    port = input("Enter the port number: ")
+
+    attempts = 0
+    while attempts < 2:
+        port = input("Enter the port number: ")
+        if not port:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                input("Press Enter to continue...")
+                return
+            continue
+        else:
+            break
 
     command = f"hdbuserstore set {key} {host}:{port}@{database} {user} {password}"
 
@@ -86,8 +151,11 @@ def get_userstores():
         lines = output.split("\n")
         userstores = []
         for i in range(len(lines)):
-            if lines[i].startswith("KEY "):
-                userstore = lines[i].strip()
+            line = lines[i].strip()
+            if line.startswith("KEY FILE"):
+                continue  # Skip the line with "KEY FILE"
+            if line.startswith("KEY "):
+                userstore = line
                 if i + 1 < len(lines) and lines[i + 1].strip().startswith("ENV :"):
                     userstore += " " + lines[i + 1].strip()
                 userstores.append(userstore)

@@ -36,7 +36,7 @@ def print_bold(text):
     print('\033[1m' + text + '\033[0m')
 
 def display_version():
-    print(f"MyProgram version {VERSION}")
+    print(f"TinyHanaTools {VERSION}")
 
 def display_main_menu(selected_userstore):
     clear_screen()

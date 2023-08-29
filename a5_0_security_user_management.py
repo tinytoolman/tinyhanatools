@@ -12,6 +12,7 @@
 import os
 import socket
 import subprocess
+import getpass
 import a5_1_modify_user
 
 def clear_screen():
@@ -58,32 +59,107 @@ def handle_security_user_management_menu(selected_userstore):
     else:
         print("Invalid choice. Please try again.")
 
-    # Wait for user input to return to the security user management menu
     input("Press Enter to continue...")
     handle_security_user_management_menu(selected_userstore)
+
+import getpass
 
 def create_user(selected_userstore):
     clear_screen()
     print(f"Creating User with Userstore: {selected_userstore}")
     print("")
 
-    username = input("Enter the username for the new user: ")
-    password = input("Enter the password for the new user: ")
-    force_change = input("Force first password change (Y/N): ")
-    permissions = input("Enter the comma-separated list of permissions to grant: ")
-    disable_lifetime = input("Disable password lifetime (Y/N): ")
+    attempts = 0
+    attempts2 = 0
+    while attempts < 2:
+        username = input("Enter the username for the new user: ")
+        if not username:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
+
+    attempts = 0
+    while attempts < 2:
+        password = getpass.getpass("Enter the password for the new user: ")
+        if not password:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
+
+    attempts = 0
+    while attempts < 2:
+        force_change = input("Force first password change (Y/N) [N]: ") or 'n'
+        if force_change.lower() not in ['y', 'n']:
+            attempts += 1
+            print("Wrong Input.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
+
+    permissions = input("Enter the comma-separated list of permissions to grant: ").strip()
+
+    attempts = 0
+    while attempts < 2:
+        disable_lifetime = input("Disable password lifetime (Y/N) [N]: ") or 'N'
+        if disable_lifetime.lower() not in ['y', 'n']:
+            attempts += 1
+            print("Wrong Input.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
 
     key = selected_userstore.split()[1]
     command = ["hdbsql", "-U", key]
 
-    try:
-        sql_commands = [
-            f"CREATE USER {username} PASSWORD {password} {'FORCE_FIRST_PASSWORD_CHANGE' if force_change.upper() == 'Y' else ''};",
-            f"GRANT {permissions} TO {username};",
-            f"ALTER USER {username} {'DISABLE PASSWORD LIFETIME' if disable_lifetime.upper() == 'Y' else 'ENABLE PASSWORD LIFETIME'};"
-        ]
+    '''
+    sql_commands = [
+        f"CREATE USER {username} PASSWORD {password} {'FORCE PASSWORD CHANGE' if force_change.upper() == 'Y' else ''};",
+        f"GRANT {permissions} TO {username};",
+        f"ALTER USER {username} {'DISABLE PASSWORD LIFETIME' if disable_lifetime.upper() == 'Y' else 'ENABLE PASSWORD LIFETIME'};"
+    ]
+    '''
 
+    sql_commands = [
+        f"CREATE USER {username} PASSWORD {password} {'FORCE PASSWORD CHANGE' if force_change.upper() == 'Y' else ''};"
+    ]
+
+    if permissions:
+        sql_commands.append(f"GRANT {permissions} TO {username};")
+
+    sql_commands.append(f"ALTER USER {username} {'DISABLE PASSWORD LIFETIME' if disable_lifetime.upper() == 'Y' else 'ENABLE PASSWORD LIFETIME'};")
+
+
+    '''
+    sql_commands = [
+        f"CREATE USER {username} PASSWORD {password} {'FORCE_FIRST_PASSWORD_CHANGE' if force_change.upper() == 'Y' else ''};"
+    ]
+
+    # Adding the GRANT command only if permissions are specified
+    if permissions:
+        sql_commands.append(f"GRANT {permissions} TO {username};")
+
+    sql_commands.append(f"ALTER USER {username} {'DISABLE PASSWORD LIFETIME' if disable_lifetime.upper() == 'Y' else 'ENABLE PASSWORD LIFETIME'};")
+    '''
+
+    try:
         for sql_script in sql_commands:
+            print(str(command) + " : " + str(sql_script))
             subprocess.run(command + [sql_script], encoding='utf-8', check=True)
 
         print("User created successfully.")
@@ -92,15 +168,35 @@ def create_user(selected_userstore):
     except Exception as ex:
         print(f"Error creating user: {str(ex)}")
 
-    input("Press Enter to continue...")
-
 def delete_user(selected_userstore):
     clear_screen()
     print(f"Deleting User with Userstore: {selected_userstore}")
     print("")
 
-    username = input("Enter the username to delete: ")
-    confirm = input(f"Are you sure you want to delete the user '{username}'? (Y/N): ")
+    attempts = 0
+    while attempts < 2:
+        username = input("Enter the username to delete: ")
+        if not username:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                return
+            continue
+        else:
+            break
+
+    attempts = 0
+    while attempts < 2:
+        confirm = input(f"Are you sure you want to delete the user '{username}'? (Y/N): ")
+        if confirm.lower() not in ['y', 'n']:
+            attempts += 1
+            print("Wrong Input.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
 
     if confirm.upper() == 'Y':
         key = selected_userstore.split()[1]
@@ -116,8 +212,6 @@ def delete_user(selected_userstore):
             print(f"Error deleting user: {str(ex)}")
     else:
         print("User deletion cancelled.")
-
-    input("Press Enter to continue...")
 
 def create_role(selected_userstore):
     clear_screen()

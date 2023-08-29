@@ -70,7 +70,6 @@ def create_user(selected_userstore):
     print("")
 
     attempts = 0
-    attempts2 = 0
     while attempts < 2:
         username = input("Enter the username for the new user: ")
         if not username:

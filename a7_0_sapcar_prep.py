@@ -68,7 +68,20 @@ def handle_sapcar_prep(selected_userstore):
 
 def change_extraction_directory():
     global current_extraction_directory
-    new_directory = input("Please provide the new extraction directory: ")
+
+    attempts = 0
+    while attempts < 2:
+        new_directory = input("Please provide the new extraction directory: ")
+        if not new_directory:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
+
     if os.path.isdir(new_directory):
         current_extraction_directory = new_directory
         os.chdir(current_extraction_directory)
@@ -78,7 +91,20 @@ def change_extraction_directory():
 
 def set_patch_directory():
     global patch_directory
-    new_directory = input("Please provide the new patch directory: ")
+
+    attempts = 0
+    while attempts < 2:
+        new_directory = input("Please provide the new patch directory: ")
+        if not new_directory:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
+
     if os.path.isdir(new_directory):
         patch_directory = new_directory
         print(f"Patch directory set to: {patch_directory}")
@@ -87,7 +113,23 @@ def set_patch_directory():
 
 def view_patch_directory():
     global patch_directory
-    path = patch_directory or input("Please provide the path to the patch directory: ")
+
+    if not patch_directory:
+        attempts = 0
+        while attempts < 2:
+            new_directory = input("Please provide the path to the patch directory: ")
+            if not new_directory:
+                attempts += 1
+                print("Nothing entered.")
+                if attempts == 2:
+                    print("Going back to menu.")
+                    return
+                continue
+            else:
+                break
+
+    path = patch_directory
+
     try:
         files = get_files_in_directory(path)
         print(f"List obtained from {path}:")
@@ -98,7 +140,23 @@ def view_patch_directory():
 
 def view_extraction_directory():
     global current_extraction_directory
-    path = current_extraction_directory or input("Please provide the path to the extraction directory: ")
+
+    if not current_extraction_directory:
+        attempts = 0
+        while attempts < 2:
+            new_directory = input("Please provide the path to the extraction directory: ")
+            if not new_directory:
+                attempts += 1
+                print("Nothing entered.")
+                if attempts == 2:
+                    print("Going back to menu.")
+                    return
+                continue
+            else:
+                break
+
+    path = current_extraction_directory
+
     try:
         files = get_files_in_directory(path)
         print(f"List obtained from {path}:")
@@ -108,7 +166,19 @@ def view_extraction_directory():
         print(f"Invalid path: {path}")
 
 def create_directory():
-    directory_path = input("Please provide the full path to the directory: ")
+    attempts = 0
+    while attempts < 2:
+        directory_path = input("Please provide the full path to the directory: ")
+        if not directory_path:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
+
     try:
         os.makedirs(directory_path)
         print(f"Directory created successfully: {directory_path}")
@@ -139,7 +209,19 @@ def extract_files_with_sapcar():
     for i, file_name in enumerate(files, start=1):
         print(f"{i}. {file_name}")
 
-    file_nums = input("Enter file number(s) [comma separated or ALL]: ")
+    attempts = 0
+    while attempts < 2:
+        file_nums = input("Enter file number(s) [comma separated or ALL]: ")
+        if not file_nums:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
+
     if file_nums.upper() == 'ALL':
         selected_files = [str(num) for num in range(1, len(files) + 1)]
     else:

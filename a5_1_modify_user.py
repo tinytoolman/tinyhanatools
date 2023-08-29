@@ -67,8 +67,31 @@ def change_password(selected_userstore):
     print(f"Changing User Password with Userstore: {selected_userstore}")
     print("")
 
-    username = input("Enter the username to change password: ")
-    new_password = input("Enter the new password: ")
+    attempts = 0
+    while attempts < 2:
+        username = input("Enter the username for the new user: ")
+        if not username:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
+
+    attempts = 0
+    while attempts < 2:
+        password = getpass.getpass("Enter the new password: ")
+        if not password:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
 
     key = selected_userstore.split()[1]
     command = ["hdbsql", "-U", key]
@@ -87,7 +110,18 @@ def lock_unlock_account(selected_userstore):
     print(f"Locking/Unlocking User Account with Userstore: {selected_userstore}")
     print("")
 
-    username = input("Enter the username to lock/unlock: ")
+    attempts = 0
+    while attempts < 2:
+        username = input("Enter the username to lock/unlock: ")
+        if not username:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
 
     key = selected_userstore.split()[1]
     command = ["hdbsql", "-U", key]
@@ -136,9 +170,45 @@ def grant_revoke_roles(selected_userstore):
     print(f"Granting/Revoking Roles with Userstore: {selected_userstore}")
     print("")
 
-    username = input("Enter the username to grant/revoke roles: ")
-    roles = input("Enter the comma-separated list of roles to grant/revoke: ").split(',')
-    action = input("Do you want to grant 'G' or revoke 'R' these roles? ")
+    attempts = 0
+    while attempts < 2:
+        username = input("Enter the username to grant/revoke roles: ")
+        if not username:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
+
+    attempts = 0
+    while attempts < 2:
+        roles = input("Enter the comma-separated list of roles to grant/revoke: ").split(',')
+        if not roles:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
+
+    attempts = 0
+    while attempts < 2:
+        action = input("Do you want to grant 'G' or revoke 'R' these roles? ")
+        if not action:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
+
 
     key = selected_userstore.split()[1]
     command = ["hdbsql", "-U", key]
@@ -171,10 +241,22 @@ def check_assigned_role_priv(selected_userstore):
     print(f"Checking Assigned Roles/Privileges with Userstore: {selected_userstore}")
     print("")
 
-    username = input("Enter the username to check roles/privileges: ")
+    attempts = 0
+    while attempts < 2:
+        username = input("Enter the username to check roles/privileges: ")
+        if not username:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
+
     print("\nRemember to press 'q' to quit once report is displayed to quit")
     print("You can use page up and page down as well as enter key to navigate\n")
-    check_option = input("Do you want to check 'P' for privileges or 'R' for roles? ")
+    check_option = input("Do you want to check 'P' for privileges or 'R' for roles? [R] ") or 'r'
 
     key = selected_userstore.split()[1]
     command = ["hdbsql", "-U", key]
@@ -203,7 +285,18 @@ def set_password_lifetime(selected_userstore):
     print(f"Setting Password Lifetime with Userstore: {selected_userstore}")
     print("")
 
-    username = input("Enter the username to set password lifetime: ")
+    attempts = 0
+    while attempts < 2:
+        username = input("Enter the username to set password lifetime: ")
+        if not username:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
 
     key = selected_userstore.split()[1]
     command = ["hdbsql", "-U", key]
@@ -236,7 +329,18 @@ def change_user_validity(selected_userstore):
     print(f"Changing User Validity with Userstore: {selected_userstore}")
     print("")
 
-    username = input("Enter the username to change validity: ")
+    attempts = 0
+    while attempts < 2:
+        username = input("Enter the username to change validity: ")
+        if not username:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
 
     key = selected_userstore.split()[1]
     command = ["hdbsql", "-U", key]
@@ -275,7 +379,18 @@ def check_user_attributes(selected_userstore):
     print(f"Checking User Attributes with Userstore: {selected_userstore}")
     print("")
 
-    username = input("Enter the username to check attributes: ")
+    attempts = 0
+    while attempts < 2:
+        username = input("Enter the username to check attributes: ")
+        if not username:
+            attempts += 1
+            print("Nothing entered.")
+            if attempts == 2:
+                print("Going back to menu.")
+                return
+            continue
+        else:
+            break
 
     key = selected_userstore.split()[1]
     command = ["hdbsql", "-U", key]
